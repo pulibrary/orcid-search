@@ -18,4 +18,4 @@ Python CLI for searching the ORCID public API
 
 ## Run script
 
-    python search_orcid.py --search=[affiliation organization name(s) to search]
+    python search_orcid.py --search=[affiliation organization name(s) to search] --file=[path to save results file]
