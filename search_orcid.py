@@ -57,50 +57,57 @@ def getName(orcid):
     return json_object
 
 def search_affiliations(search):
+    startRow = 0
+    numRows = 100
     output = []
-    #startRow = 0
     #set request variables
     base_url = config.search_endpoint
-    data = BytesIO()
     query = {'defType' : 'edismax', 'q' : 'affiliation-org-name:' + '"' + search + '"'}
     #url encode query
     encoded_query = urllib.urlencode(query)
-    #create request string
-    request_string = base_url + encoded_query + '&rows=10'
-    print request_string
-    #create and send http request
-    c = pycurl.Curl()
-    c.setopt(c.URL, request_string)
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
-    c.setopt(c.POST, 0)
-    c.setopt(c.WRITEFUNCTION, data.write)
-    c.perform()
-    c.close()
-    #get request response
-    json_object = json.loads(data.getvalue())
-    new_results = json_object['result']
-    num_results = json_object['num-found']
-    #return num_results
-    print num_results
-    for result in new_results:
-        temp_row = []
-        temp_row.append(result['orcid-identifier']['path'])
-        names = getName(result['orcid-identifier']['path'])
-        if names['name']:
-            if names['name']['given-names']:
-                temp_row.append(names['name']['given-names']['value'])
+    
+    while(True):
+        data = BytesIO()
+        #create request string
+        request_string = base_url + encoded_query + '&start=' + str(startRow)
+        request_string = request_string + '&rows=' + str(numRows)
+        print request_string
+        #create and send http request
+        c = pycurl.Curl()
+        c.setopt(c.URL, request_string)
+        c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
+        c.setopt(c.POST, 0)
+        c.setopt(c.WRITEFUNCTION, data.write)
+        c.perform()
+        c.close()
+        #get request response
+        json_object = json.loads(data.getvalue())
+        new_results = json_object['result']
+        num_results = json_object['num-found']
+        #return num_results
+        if len(new_results) == 0:
+            break
+        print "Getting " + str(startRow + numRows) + " out of " + str(num_results)
+        for result in new_results:
+            temp_row = []
+            temp_row.append(result['orcid-identifier']['path'])
+            names = getName(result['orcid-identifier']['path'])
+            if names['name']:
+                if names['name']['given-names']:
+                    temp_row.append(names['name']['given-names']['value'])
+                else:
+                    temp_row.append('')
+                if names['name']['family-name']:
+                    temp_row.append(names['name']['family-name']['value'])
+                else:
+                    temp_row.append('')
             else:
                 temp_row.append('')
-            if names['name']['family-name']:
-                temp_row.append(names['name']['family-name']['value'])
-            else:
                 temp_row.append('')
-        else:
-            temp_row.append('')
-            temp_row.append('')
-
-        output.append(temp_row)
-    print output
+    
+            output.append(temp_row)
+        #print output
+        startRow += numRows
     csv_to_file(output)
 
 def main():
