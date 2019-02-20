@@ -3,7 +3,7 @@ Python CLI for searching the ORCID public API
 
 ## Clone this repository to your machine
 
-1. `git clone git@github.com:lizkrznarich/orcid-search.git`
+1. `git clone https://github.com/ORCID/orcid-search.git`
 
 ## Set up virtual environment 
 
