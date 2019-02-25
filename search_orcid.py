@@ -10,16 +10,25 @@ import urllib
 import json
 
 
-def csv_to_file(output):
-    with open(config.outputFile, "w") as outputFile:
-        wr = csv.writer(outputFile, lineterminator='\n')
-        wr.writerows(output)
-
-#not used yet
+#Check if an access token has already been generated
+def token_check():
+	#If there is an existing saved access token, use that
+	try:
+		with open ("token.txt", "r") as myfile:
+			token=myfile.read()
+			print "Using existing access token from token.txt"
+			return str(token)
+	#If there is not an existing token, create one and save it
+	except:
+		print "Generating new access token"
+		token = get_orcid_token()
+		return token
+			
+#Generate a /read-public token
 def get_orcid_token():
     #set request variables
-    client_id = config.orcid_client_id
-    client_secret = config.orcid_client_secret
+    client_id = config.client_id
+    client_secret = config.client_secret
     token_endpoint = config.token_endpoint
     data = BytesIO()
     #create post data
@@ -36,82 +45,84 @@ def get_orcid_token():
     c.close()
     #get request response
     json_object = json.loads(data.getvalue())
-    token = json_object['access_token']
-    return token
+    #get and save the token so it can be reused or return the error if there was one
+    if 'access_token' in json_object:
+    	token = json_object['access_token']
+    	with open("token.txt", "w") as text_file:
+    		text_file.write(token)
+    	return token
+    else:
+    	print "Could not generate token. " + str(json_object)
 
-def getName(orcid):
-    base_url = config.api_endpoint
-    data = BytesIO()
-    #create request string
-    request_string = base_url + orcid + '/person'
-    #create and send http request
-    c = pycurl.Curl()
-    c.setopt(c.URL, request_string)
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
-    c.setopt(c.POST, 0)
-    c.setopt(c.WRITEFUNCTION, data.write)
-    c.perform()
-    c.close()
-    #get request response
-    json_object = json.loads(data.getvalue())
-    return json_object
-
-def search_affiliations(search):
-    startRow = 0
-    numRows = 100
-    output = []
-    #set request variables
-    base_url = config.search_endpoint
-    query = {'defType' : 'edismax', 'q' : 'affiliation-org-name:' + '"' + search + '"'}
-    #url encode query
-    encoded_query = urllib.urlencode(query)
-    
-    while(True):
-        data = BytesIO()
-        #create request string
-        request_string = base_url + encoded_query + '&start=' + str(startRow)
-        request_string = request_string + '&rows=' + str(numRows)
-        print request_string
-        #create and send http request
-        c = pycurl.Curl()
-        c.setopt(c.URL, request_string)
-        c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
-        c.setopt(c.POST, 0)
-        c.setopt(c.WRITEFUNCTION, data.write)
-        c.perform()
-        c.close()
-        #get request response
-        json_object = json.loads(data.getvalue())
-        new_results = json_object['result']
-        num_results = json_object['num-found']
-        #return num_results
-        if len(new_results) == 0:
-            break
-        print "Getting " + str(startRow + numRows) + " out of " + str(num_results)
-        for result in new_results:
-            temp_row = []
-            temp_row.append(result['orcid-identifier']['path'])
-            names = getName(result['orcid-identifier']['path'])
-            if names['name']:
-                if names['name']['given-names']:
-                    temp_row.append(names['name']['given-names']['value'])
-                else:
-                    temp_row.append('')
-                if names['name']['family-name']:
-                    temp_row.append(names['name']['family-name']['value'])
-                else:
-                    temp_row.append('')
-            else:
-                temp_row.append('')
-                temp_row.append('')
-    
-            output.append(temp_row)
-        #print output
-        startRow += numRows
-    csv_to_file(output)
+#Run Search
+def search_affiliations(token, start=0):
+	startRow = 0
+	numRows = 200
+	output = []
+	#Create search string using search terms and type
+	search = config.search
+	type = config.type
+	if type == 'ringgold':
+		search_type = 'ringgold-org-id:'
+	elif type == 'grid':
+		search_type = 'grid-org-id:'
+	elif type == 'name':
+		search_type = 'affiliation-org-name:'
+	else:
+		print "Invalid search type: " + type
+		return
+	#build search query
+	search_string = search_type + "(%22" + "%22+OR+%22".join(search) + "%22)"
+	#encode any spaces in search terms
+	search_string = search_string.replace(" ", "%20")
+	#build search url
+	base_url = config.search_endpoint
+	while(True):
+		data = BytesIO()
+		#create request string
+		request_string = base_url + "q=" + search_string + "&rows=200&start=" + str(startRow)
+		#create and send http request
+		c = pycurl.Curl()
+		c.setopt(c.URL, request_string)
+		c.setopt(c.HTTPHEADER, ['Accept: application/json', 'Authorization: Bearer %s' % token])
+		c.setopt(c.POST, 0)
+		c.setopt(c.WRITEFUNCTION, data.write)
+		c.perform()
+		c.close()
+		json_object = json.loads(data.getvalue())
+		if 'result' in json_object:
+			new_results = json_object['result']
+			num_results = json_object['num-found']
+			#If there are no results
+			if len(new_results) == 0:
+				print "No results found for your query"
+				break
+			#Page through results
+			if startRow + numRows > num_results:
+				print "Getting results " + str(num_results) + " out of " + str(num_results)
+			else:
+				print "Getting results " + str(startRow + numRows) + " out of " + str(num_results)
+			for result in new_results:
+				temp_row = []
+				temp_row.append(result['orcid-identifier']['path'])
+				output.append(temp_row)
+        		startRow += numRows
+        		if startRow > num_results:
+        			break
+		else:
+			print "Error running search. " + str(json_object)
+			break
+	csv_to_file(output)
+			
+#Write the output results to a CSV file
+def csv_to_file(output):
+    with open(config.outputFile, "w") as outputFile:
+        wr = csv.writer(outputFile, lineterminator='\n')
+        wr.writerows(output)
 
 def main():
-    search_affiliations(config.search)
+	token = token_check()
+	search_affiliations(token)
 
 if __name__ == '__main__':
   main()
