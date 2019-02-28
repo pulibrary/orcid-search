@@ -46,4 +46,4 @@ Relace values in square brackets with your values in inverted commas.
 
 `python search_orcid.py --search='385488' --type='ringgold' --orcid_client_id='0000-0001-8203-3567' --orcid_client_secret='193***7' --file=results.csv`
 
-`python search_orcid.py --search='Oberlin' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=folder/results.csv
+`python search_orcid.py --search='Oberlin' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=folder/results.csv`
