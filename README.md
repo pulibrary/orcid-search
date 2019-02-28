@@ -38,12 +38,12 @@ Parameters
 
 Relace values in square brackets with your values in inverted commas.
 
-    `python search_orcid.py --search=[affiliation organization name(s) or identifiers] --type=[ringgold/grid/name] --orcid_client_id=[Your client iD] --orcid_client_secret=[Your client secret] --file=[path to save results file]`
+`python search_orcid.py --search=[affiliation organization name(s) or identifiers] --type=[ringgold/grid/name] --orcid_client_id=[Your client iD] --orcid_client_secret=[Your client secret] --file=[path to save results file]`
     
 **Command line examples**
 
-	`python search_orcid.py --search='National Taiwan Normal University; 國立臺灣師範大學; NTNU' --type='name' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=results.csv`
-	
-	`python search_orcid.py --search='385488' --type='ringgold' --orcid_client_id='0000-0001-8203-3567' --orcid_client_secret='193***7' --file=results.csv`
-	
-	`python search_orcid.py --search='Oberlin' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=folder/results.csv
+`python search_orcid.py --search='National Taiwan Normal University; 國立臺灣師範大學; NTNU' --type='name' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=results.csv`
+
+`python search_orcid.py --search='385488' --type='ringgold' --orcid_client_id='0000-0001-8203-3567' --orcid_client_secret='193***7' --file=results.csv`
+
+`python search_orcid.py --search='Oberlin' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=folder/results.csv
