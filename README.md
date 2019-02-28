@@ -20,7 +20,12 @@ This script requires API credentials to access the ORCID API. If you do not have
 
 4. `pip2 install -r requirements.txt` 
 
-*Note: If you are running MacOS High Sierra, you may receive an error installing the packages in requirements.txt. To fix, install Xcode command line tools* `xcode-select --install`
+*Note: If you are running MacOS High Sierra, you may receive an error installing the packages in requirements.txt. To fix, install Xcode command line tools* `xcode-select --install` *If using homebrew and this doesn't work try the following*
+
+`brew install libxml2
+brew install libxslt
+brew link libxml2 --force
+brew link libxslt --force`
 
 ## Run script
 
@@ -34,10 +39,13 @@ Parameters
 | orcid\_client\_secret | your client secret |
 | file | path to the file to save the output |
 
+**Command line syntax**
+
+Relace values in square brackets with your values in inverted commas.
 
     `python search_orcid.py --search=[affiliation organization name(s) or identifiers] --type=[ringgold/grid/name] --orcid_client_id=[Your client iD] --orcid_client_secret=[Your client secret] --file=[path to save results file]`
     
-Examples
+**Command line examples**
 
 	`python search_orcid.py --search='National Taiwan Normal University; 國立臺灣師範大學; NTNU' --type='name' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=results.csv`
 	
