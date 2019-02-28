@@ -20,12 +20,7 @@ This script requires API credentials to access the ORCID API. If you do not have
 
 4. `pip2 install -r requirements.txt` 
 
-*Note: If you are running MacOS High Sierra, you may receive an error installing the packages in requirements.txt. To fix, install Xcode command line tools* `xcode-select --install` *If using homebrew and this doesn't work try the following*
-
-`brew install libxml2
-brew install libxslt
-brew link libxml2 --force
-brew link libxslt --force`
+*Note: If you are running MacOS High Sierra, you may receive an error installing the packages in requirements.txt. To fix, install Xcode command line tools* `xcode-select --install`
 
 ## Run script
 
