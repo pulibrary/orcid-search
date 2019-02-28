@@ -34,10 +34,13 @@ Parameters
 | orcid\_client\_secret | your client secret |
 | file | path to the file to save the output |
 
+**Command line syntax**
+
+Relace values in square brackets with your values in inverted commas.
 
     `python search_orcid.py --search=[affiliation organization name(s) or identifiers] --type=[ringgold/grid/name] --orcid_client_id=[Your client iD] --orcid_client_secret=[Your client secret] --file=[path to save results file]`
     
-Examples
+**Command line examples**
 
 	`python search_orcid.py --search='National Taiwan Normal University; 國立臺灣師範大學; NTNU' --type='name' --orcid_client_id='APP-L3M68AY6XVSOKTCK' --orcid_client_secret='892***6' --file=results.csv`
 	
