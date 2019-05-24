@@ -4,7 +4,16 @@ Python CLI for searching the ORCID public API
 
 This script generates a CSV file of all ORCID records that match an affiliation search. You can search by organization name or identifier and multiple terms can be entered.
 
-This script requires API credentials to access the ORCID API. If you do not have credentials, you can [register a Public API Client](https://support.orcid.org/hc/en-us/articles/360006897174-Register-a-public-API-client-application).
+## Prerequisites
+
+- Install [Python](https://www.python.org/downloads) 2.7.9 or higher
+- Install [PIP](https://pip.pypa.io/en/stable/installing/) (this should be included with your Python installation, but if not, you will need to install it separately)
+- ORCID public API or member API credentials. If you do not have credentials, you can [register a Public API Client](https://support.orcid.org/hc/en-us/articles/360006897174-Register-a-public-API-client-application).
+
+Guides for installing Python/PIP: 
+
+- [Get your Mac ready for Python programming](https://www.pyladies.com/blog/Get-Your-Mac-Ready-for-Python-Programming/Get-Your-Mac-Ready-for-Python-Programming/)
+- [How to install Python PIP on Windows, Mac and Linux](https://www.makeuseof.com/tag/install-pip-for-python/)
 
 ## Clone this repository to your machine
 
