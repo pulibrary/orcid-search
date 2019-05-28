@@ -25,7 +25,7 @@ Guides for installing Python/PIP:
 
 2. `virtualenv venv`
 
-3. `source ./venv/bin/activate` nix systesm `source venv\bin\activate` windows
+3. `source ./venv/bin/activate` Mac/\*Nix systems (or emulators, such as Git Bash and Cygwin) `source venv\bin\activate` Windows Command Prompt
 
 4. `pip2 install -r requirements.txt` 
 
