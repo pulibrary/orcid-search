@@ -144,6 +144,10 @@ def getName(orcid):
 	c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
 	c.setopt(c.POST, 0)
 	c.setopt(c.WRITEFUNCTION, data.write)
+	c.setopt(pycurl.SSL_VERIFYPEER, 1)
+	c.setopt(pycurl.SSL_VERIFYHOST, 2)
+	c.setopt(pycurl.CAINFO, "cacert.pem")
+	c.setopt(c.WRITEFUNCTION, data.write)
 	c.perform()
 	c.close()
 	#get request response
