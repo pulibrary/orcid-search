@@ -111,6 +111,19 @@ def search_affiliations(token, start=0):
 			for result in new_results:
 				temp_row = []
 				temp_row.append(result['orcid-identifier']['path'])
+				names = getName(result['orcid-identifier']['path'])
+				if names['name']:
+					if names['name']['given-names']:
+						temp_row.append(names['name']['given-names']['value'])
+					else:
+						temp_row.append('')
+					if names['name']['family-name']:
+						temp_row.append(names['name']['family-name']['value'])
+					else:
+						temp_row.append('')
+				else:
+					temp_row.append('')
+					temp_row.append('')
 				output.append(temp_row)
         		startRow += numRows
         		if startRow > num_results:
@@ -119,6 +132,23 @@ def search_affiliations(token, start=0):
 			print "Error running search. " + str(json_object)
 			break
 	csv_to_file(output)
+
+def getName(orcid):
+	base_url = config.api_endpoint
+	data = BytesIO()
+	#create request string
+	request_string = base_url + orcid + '/person'
+	#create and send http request
+	c = pycurl.Curl()
+	c.setopt(c.URL, request_string)
+	c.setopt(c.HTTPHEADER, ['Content-Type: application/orcid+xml', 'Accept: application/json'])
+	c.setopt(c.POST, 0)
+	c.setopt(c.WRITEFUNCTION, data.write)
+	c.perform()
+	c.close()
+	#get request response
+	json_object = json.loads(data.getvalue())
+	return json_object
 			
 #Write the output results to a CSV file
 def csv_to_file(output):
