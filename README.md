@@ -6,7 +6,7 @@ This script generates a CSV file of all ORCID records that match an affiliation 
 
 ## Prerequisites
 
-- Install [Python](https://www.python.org/downloads) 2.7.9 or higher
+- Install [Python](https://www.python.org/downloads) 2.7.9
 - Install [PIP](https://pip.pypa.io/en/stable/installing/) (this should be included with your Python installation, but if not, you will need to install it separately)
 - ORCID public API or member API credentials. If you do not have credentials, you can [register a Public API Client](https://support.orcid.org/hc/en-us/articles/360006897174-Register-a-public-API-client-application).
 
