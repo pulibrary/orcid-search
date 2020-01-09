@@ -1,5 +1,7 @@
 # orcid-search
 
+**NOTE: This functionality is now supported directly by the search API.  You can ask it for CSV results!  See [Search results returned in CSV format](https://members.orcid.org/api/resources/find-myresearchers) for details.**
+
 Python CLI for searching the ORCID public API
 
 This script generates a CSV file of all ORCID records that match an affiliation search. You can search by organization name or identifier and multiple terms can be entered.
