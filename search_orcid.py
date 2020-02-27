@@ -9,7 +9,6 @@ import unicodecsv as csv
 import urllib
 import json
 
-
 #Check if an access token has already been generated
 def token_check():
     #If there is an existing saved access token, use that
@@ -124,6 +123,11 @@ def search_affiliations(token, start=0):
                 else:
                     temp_row.append('')
                     temp_row.append('')
+                email_strings = [email['email'] for email in names['emails']['email']]
+                temp_row.append(';'.join(email_strings))
+                affiliations = getAffiliation(result['orcid-identifier']['path'])
+                affiliations = [employments['organization']['name'] for employments in affiliations['employment-summary']]
+                temp_row.append(';'.join(affiliations))
                 output.append(temp_row)
             startRow += numRows
             if startRow > num_results:
@@ -135,9 +139,19 @@ def search_affiliations(token, start=0):
 
 def getName(orcid):
     base_url = config.api_endpoint
+    request_string = base_url + orcid + '/person'
+    result = getData(request_string)
+    return result
+
+def getAffiliation(orcid):
+    base_url = config.api_endpoint
+    request_string = base_url + orcid + '/employments'
+    result = getData(request_string)
+    return result
+
+def getData(request_string):
     data = BytesIO()
     #create request string
-    request_string = base_url + orcid + '/person'
     #create and send http request
     c = pycurl.Curl()
     c.setopt(c.URL, request_string)
